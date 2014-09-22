@@ -257,10 +257,12 @@ ccNotifications.comboPresent = function (event) {
 ccNotifications.goldenCookieExpire = function (event) {
   var cookieType = event.detail.cookieType;
   var secondsRemaining = event.detail.secondsRemaining;
+  var iconUrl = ccNotifications.cookieIconUrl(cookieType);
 
   if (secondsRemaining < ccNotifications.EXPIRE_WARNING_SECONDS) {
     ccNotifications.createNotification(cookieType + ' ' + 'cookie expiring!', {
       body: secondsRemaining + ' ' + 'seconds remaining',
+      icon: iconUrl,
       tag: 'expire'
     }, ccNotifications.DEFAULT_TIMEOUT_MS);
   }
