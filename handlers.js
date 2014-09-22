@@ -1,5 +1,7 @@
 ccNotifications = {};
 
+ccNotifications.VERSION = '0.0.0';
+
 ccNotifications.EVENT_PROCESSING_INTERVAL_MS = 100;
 ccNotifications.EXPIRE_WARNING_SECONDS = 10;
 

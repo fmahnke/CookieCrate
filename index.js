@@ -1,5 +1,7 @@
 ccEvents = {};
 
+ccEvents.VERSION = '0.0.0';
+
 ccEvents.GAME_DIV = document.getElementById('game');
 
 ccEvents.GOLDEN_COOKIE_ONSCREEN = false;
@@ -187,6 +189,8 @@ Game.Loop = function () {
 
 ccNotifications = {};
 
+ccNotifications.VERSION = '0.0.0';
+
 ccNotifications.EVENT_PROCESSING_INTERVAL_MS = 100;
 ccNotifications.EXPIRE_WARNING_SECONDS = 10;
 
@@ -236,7 +240,6 @@ ccNotifications.goldenCookieEntered = function (event) {
 };
 
 ccNotifications.comboPresent = function (event) {
-  console.log('combo134234');
   var cookieType = event.detail.cookieType;
 
   var notification = new Notification(cookieType + ' ' + 'and reindeer combo!', {

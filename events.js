@@ -1,5 +1,7 @@
 ccEvents = {};
 
+ccEvents.VERSION = '0.0.0';
+
 ccEvents.GAME_DIV = document.getElementById('game');
 
 ccEvents.GOLDEN_COOKIE_ONSCREEN = false;
