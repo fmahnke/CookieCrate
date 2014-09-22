@@ -12,6 +12,8 @@ ccNotifications.WRATH_COOKIE_ICON_URL =
 ccNotifications.REINDEER_ICON_URL =
     'http://orteil.dashnet.org/cookieclicker/img/frostedReindeer.png';
 
+ccNotifications.DEFAULT_TIMEOUT_MS = 2000;
+
 ccNotifications.nextEventProcessingTime = 0;
 
 ccNotifications.incomingEvents = [];
@@ -31,11 +33,16 @@ ccNotifications.cookieIconUrl = function (cookieType) {
   }
 };
 
+ccNotifications.createNotification = function (title, properties, duration) {
+  var notification = new Notification(title, properties);
+  setTimeout(function () { notification.close(); }, duration);
+};
+
 ccNotifications.reindeerEntered = function () {
-  var notification = new Notification('Reindeer spawned', {
+  ccNotifications.createNotification('Reindeer spawned', {
     icon: ccNotifications.REINDEER_ICON_URL,
     tag: 'reindeer'
-  });
+  }, ccNotifications.DEFAULT_TIMEOUT_MS);
 };
 
 ccNotifications.goldenCookieEntered = function (event) {
@@ -43,19 +50,19 @@ ccNotifications.goldenCookieEntered = function (event) {
   var secondsRemaining = event.detail.secondsRemaining;
   var iconUrl = ccNotifications.cookieIconUrl(cookieType);
       
-  var notification = new Notification(cookieType + ' ' + 'cookie spawned', {
+  ccNotifications.createNotification(cookieType + ' ' + 'cookie spawned', {
     body: secondsRemaining + ' ' + 'seconds remaining',
     icon: iconUrl,
     tag: 'cookie'
-  });
+  }, ccNotifications.DEFAULT_TIMEOUT_MS);
 };
 
 ccNotifications.comboPresent = function (event) {
   var cookieType = event.detail.cookieType;
 
-  var notification = new Notification(cookieType + ' ' + 'and reindeer combo!', {
+  ccNotifications.createNotification(cookieType + ' ' + 'and reindeer combo!', {
     tag: 'combo'
-  });
+  }, ccNotifications.DEFAULT_TIMEOUT_MS);
 };
 
 ccNotifications.goldenCookieExpire = function (event) {
@@ -63,10 +70,10 @@ ccNotifications.goldenCookieExpire = function (event) {
   var secondsRemaining = event.detail.secondsRemaining;
 
   if (secondsRemaining < ccNotifications.EXPIRE_WARNING_SECONDS) {
-    var notification = new Notification(cookieType + ' ' + 'cookie expiring!', {
+    ccNotifications.createNotification(cookieType + ' ' + 'cookie expiring!', {
       body: secondsRemaining + ' ' + 'seconds remaining',
       tag: 'expire'
-    });
+    }, ccNotifications.DEFAULT_TIMEOUT_MS);
   }
 };
 
