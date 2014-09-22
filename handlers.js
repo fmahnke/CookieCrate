@@ -11,6 +11,8 @@ ccNotifications.WRATH_COOKIE_ICON_URL =
     'http://orteil.dashnet.org/cookieclicker/img/wrathCookie.png';
 ccNotifications.REINDEER_ICON_URL =
     'http://orteil.dashnet.org/cookieclicker/img/frostedReindeer.png';
+ccNotifications.ELDEER_ICON_URL =
+    'http://orteil.dashnet.org/cookieclicker/img/imperfectCookie.png';
 
 ccNotifications.DEFAULT_TIMEOUT_MS = 2000;
 
@@ -61,6 +63,7 @@ ccNotifications.comboPresent = function (event) {
   var cookieType = event.detail.cookieType;
 
   ccNotifications.createNotification(cookieType + ' ' + 'and reindeer combo!', {
+    icon: ccNotifications.ELDEER_ICON_URL,
     tag: 'combo'
   }, ccNotifications.DEFAULT_TIMEOUT_MS);
 };
