@@ -2,7 +2,6 @@ ccNotifications = {};
 
 ccNotifications.VERSION = '0.0.0';
 
-ccNotifications.EVENT_PROCESSING_INTERVAL_MS = 100;
 ccNotifications.EXPIRE_WARNING_SECONDS = 10;
 
 ccNotifications.GOLDEN_COOKIE_ICON_URL =
@@ -16,14 +15,7 @@ ccNotifications.ELDEER_ICON_URL =
 
 ccNotifications.DEFAULT_TIMEOUT_MS = 2000;
 
-ccNotifications.nextEventProcessingTime = 0;
-
 ccNotifications.incomingEvents = [];
-
-ccNotifications.updateNextEventProcessingTime = function () {
-  ccNotifications.nextEventProcessingTime = Game.time +
-      ccNotifications.EVENT_PROCESSING_INTERVAL_MS;
-};
 
 ccNotifications.cookieIconUrl = function (cookieType) {
   if (cookieType === 'golden') {
@@ -93,21 +85,41 @@ ccNotifications.eventHandler = function (event) {
   ccNotifications.incomingEvents.push(event);
 };
 
-ccNotifications.processEvents = function () {
-  if (Game.time >= ccNotifications.nextEventProcessingTime) {
-    if (ccNotifications.incomingEvents.length > 0) {
-      ccNotifications.incomingEvents.sort(function (a, b) {
-        return b.priority > a.priority;
-      });
+ccNotifications.removeRedundantEvents = function (incomingEvents) {
+  var hasCombo = function () {
+    var filtered = incomingEvents.filter(function (evt) {
+      return (evt.type === 'comboEntered') ? true : false;
+    });
+    return (filtered.length >= 1) ? true : false;
+  };
 
-      var nextEvent = ccNotifications.incomingEvents.shift();
+  if (hasCombo()) {
+    return incomingEvents.filter(function (evt) {
+      return (evt.type !== 'reindeerEntered' && evt.type !== 'cookieEntered');
+    });
+  }
+  return incomingEvents;
+};
+
+ccNotifications.sortByPriority = function (a, b) {
+  return b.priority > a.priority;
+};
+
+ccNotifications.processEvents = function () {
+  if (ccNotifications.incomingEvents.length > 0) {
+    // Process events in order of priority.
+    ccNotifications.incomingEvents.sort(ccNotifications.sortByPriority);
+
+    var eventsToProcess = ccNotifications.removeRedundantEvents(ccNotifications.incomingEvents);
+
+    while (eventsToProcess.length > 0) {
+      var nextEvent = eventsToProcess.shift();
       var handler = ccNotifications.listeners[nextEvent.type].handler;
 
       handler(nextEvent);
     }
-
-    ccNotifications.updateNextEventProcessingTime();
   }
+  ccNotifications.incomingEvents = [];
 };
 
 ccNotifications.addListener = function (listener) {

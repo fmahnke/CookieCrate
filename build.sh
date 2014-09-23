@@ -2,7 +2,7 @@
 
 SOURCE_DIR=.
 
-sources=(events.js handlers.js)
+sources=(events.js handlers.js tests.js)
 
 rm index.js
 
