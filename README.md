@@ -1,10 +1,14 @@
 CookieCrate
 ===========
 
+*Disclaimer*: This add-on is provided with no warranty. As with any new add-on, make a backup copy
+of your game before using it. This is done in game with the Menu: Export Save function.
+
 CookieCrate is a browser add-on for [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/).
 
 CookieCrate uses browser notifications to display interesting game events. Browser notifications are
-displayed as popups, so important information will not be missed if the game is played with the window in the background!
+displayed as popups on top of all active desktop windows, so important information will not be
+missed if the game is played with the window in the background!
 
 CookieCrate shows notifications for the following events:
 
