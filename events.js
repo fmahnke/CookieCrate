@@ -131,9 +131,11 @@ ccEvents.checkCookieLeft = function () {
 ccEvents.checkCookieEntered = function () {
   if (ccEvents.COOKIE_ONSCREEN === false) {
     if (Game.goldenCookie.life > 0) {
+      var secondsRemaining = ccEvents.cookieSecondsRemaining();
+
+      ccEvents.COOKIE_LAST_TICK_SECONDS = secondsRemaining;
       ccEvents.COOKIE_ONSCREEN = true;
 
-      var secondsRemaining = ccEvents.cookieSecondsRemaining();
       var cookieEntered = ccEvents.events.cookieEntered(0, ccEvents.cookieType(), secondsRemaining);
 
       ccEvents.eventStack.push(cookieEntered);
@@ -145,10 +147,7 @@ ccEvents.checkCookieTick = function () {
   if (ccEvents.COOKIE_ONSCREEN === true) {
     var secondsRemaining = ccEvents.cookieSecondsRemaining();
 
-    if (ccEvents.COOKIE_LAST_TICK_SECONDS === 0) {
-      // First tick event for this golden cookie.
-      ccEvents.COOKIE_LAST_TICK_SECONDS = secondsRemaining;
-    } else if (secondsRemaining < ccEvents.COOKIE_LAST_TICK_SECONDS) {
+    if (secondsRemaining < ccEvents.COOKIE_LAST_TICK_SECONDS) {
       var tick = ccEvents.events.cookieTick(0, ccEvents.cookieType(), secondsRemaining);
       ccEvents.eventStack.push(tick);
 

@@ -154,3 +154,5 @@ Game.Loop = function () {
   ccNotifications.previousLoop();
   ccNotifications.processEvents();
 };
+
+Game.Notify('CookieCrate' + ' ' + ccNotifications.VERSION + ' ' + 'loaded.', '', '', 1);
