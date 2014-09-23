@@ -13,6 +13,8 @@ CookieCrate shows notifications for the following events:
 * Golden/wrath cookie and reindeer are both on screen (very useful for attempting the reindeer/elder frenzy combo).
 * Golden/wrath cookie is about to disappear. A timer will count down when 10 seconds are remaining.
 
+![Firefox notification image](http://fmahnke.github.io/CookieCrate/images/firefox_wrath_cookie_entered.png)
+
 How To Use
 ----------
 
