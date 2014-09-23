@@ -12,13 +12,10 @@ ccEvents.NOTIFIED_COMBO = false;
 ccEvents.WRATH_COOKIE_TYPE = 'wrath';
 ccEvents.GOLDEN_COOKIE_TYPE = 'golden';
 
-ccEvents.LOOP_INTERVAL_MS = 100;  // Delay between loop execution
-ccEvents.NEXT_LOOP_TIME = Game.time;
-
 ccEvents.LOG_LEVELS = {
   DEBUG: {num: 0, name: "DEBUG"}
 };
-ccEvents.LOG_LEVEL = 0;
+ccEvents.LOG_LEVEL = 1;
 
 ccEvents.eventStack = [];
 
@@ -26,15 +23,7 @@ ccEvents.goldenCookieSecondsRemaining = function () {
   return Math.ceil(Game.goldenCookie.life / Game.fps);
 };
 
-ccEvents.updateNextLoopTime = function () {
-  return Game.time + ccEvents.LOOP_INTERVAL_MS;
-};
-
 ccEvents.dispatch = function () {
-  ccEvents.eventStack.sort(function (a, b) {
-    return b.priority > a.priority;
-  });
-
   while (ccEvents.eventStack.length > 0) {
     var event = ccEvents.eventStack.shift();
 
@@ -169,15 +158,11 @@ ccEvents.checkCombo = function () {
 };
 
 ccEvents.loop = function () {
-  if (Game.time >= ccEvents.NEXT_LOOP_TIME) {
-    ccEvents.checkReindeer();
-    ccEvents.checkGoldenCookie();
-    ccEvents.checkGoldenCookieTick();
-    ccEvents.checkCombo();
-    ccEvents.dispatch();
-
-    ccEvents.NEXT_LOOP_TIME = ccEvents.updateNextLoopTime();
-  }
+  ccEvents.checkReindeer();
+  ccEvents.checkGoldenCookie();
+  ccEvents.checkGoldenCookieTick();
+  ccEvents.checkCombo();
+  ccEvents.dispatch();
 };
 
 ccEvents.cookieClickerGameLoop = Game.Loop;
