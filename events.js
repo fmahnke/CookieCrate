@@ -119,6 +119,15 @@ ccEvents.checkReindeerEntered = function () {
   }
 };
 
+ccEvents.checkCookieLeft = function () {
+  if (ccEvents.COOKIE_ONSCREEN === true) {
+    if (Game.goldenCookie.life <= 0) {
+      ccEvents.COOKIE_ONSCREEN = false;
+      ccEvents.NOTIFIED_COMBO = false;
+    }
+  }
+};
+
 ccEvents.checkCookieEntered = function () {
   if (ccEvents.COOKIE_ONSCREEN === false) {
     if (Game.goldenCookie.life > 0) {
@@ -129,25 +138,22 @@ ccEvents.checkCookieEntered = function () {
 
       ccEvents.eventStack.push(cookieEntered);
     }
-  } else {
-    if (Game.goldenCookie.life <= 0) {
-      ccEvents.COOKIE_ONSCREEN = false;
-      ccEvents.NOTIFIED_COMBO = false;
-    }
   }
 };
 
 ccEvents.checkCookieTick = function () {
-  var secondsRemaining = ccEvents.cookieSecondsRemaining();
+  if (ccEvents.COOKIE_ONSCREEN === true) {
+    var secondsRemaining = ccEvents.cookieSecondsRemaining();
 
-  if (ccEvents.COOKIE_LAST_TICK_SECONDS === 0) {
-    // First tick event for this golden cookie.
-    ccEvents.COOKIE_LAST_TICK_SECONDS = secondsRemaining;
-  } else if (secondsRemaining < ccEvents.COOKIE_LAST_TICK_SECONDS) {
-    var tick = ccEvents.events.cookieTick(0, ccEvents.cookieType(), secondsRemaining);
-    ccEvents.eventStack.push(tick);
+    if (ccEvents.COOKIE_LAST_TICK_SECONDS === 0) {
+      // First tick event for this golden cookie.
+      ccEvents.COOKIE_LAST_TICK_SECONDS = secondsRemaining;
+    } else if (secondsRemaining < ccEvents.COOKIE_LAST_TICK_SECONDS) {
+      var tick = ccEvents.events.cookieTick(0, ccEvents.cookieType(), secondsRemaining);
+      ccEvents.eventStack.push(tick);
 
-    ccEvents.COOKIE_LAST_TICK_SECONDS = secondsRemaining;
+      ccEvents.COOKIE_LAST_TICK_SECONDS = secondsRemaining;
+    }
   }
 };
 
@@ -165,6 +171,7 @@ ccEvents.checkComboEntered = function () {
 
 ccEvents.eventProcessingLoop = function () {
   ccEvents.checkReindeerEntered();
+  ccEvents.checkCookieLeft();
   ccEvents.checkCookieEntered();
   ccEvents.checkCookieTick();
   ccEvents.checkComboEntered();
