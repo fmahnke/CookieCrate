@@ -256,7 +256,7 @@ ccNotifications.comboEntered = function (event) {
   }, ccNotifications.DEFAULT_TIMEOUT_MS);
 };
 
-ccNotifications.goldenCookieExpire = function (event) {
+ccNotifications.cookieExpire = function (event) {
   var cookieType = event.detail.cookieType;
   var secondsRemaining = event.detail.secondsRemaining;
   var iconUrl = ccNotifications.cookieIconUrl(cookieType);
@@ -274,7 +274,7 @@ ccNotifications.listeners = {
   reindeerEntered: {name: 'reindeerEntered', handler: ccNotifications.reindeerEntered},
   cookieEntered: {name: 'cookieEntered', handler: ccNotifications.cookieEntered},
   comboEntered: {name: 'comboEntered', handler: ccNotifications.comboEntered},
-  cookieTick: {name: 'cookieTick', handler: ccNotifications.goldenCookieExpire}
+  cookieTick: {name: 'cookieTick', handler: ccNotifications.cookieExpire}
 };
 
 ccNotifications.eventHandler = function (event) {
