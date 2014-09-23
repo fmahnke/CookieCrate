@@ -4,8 +4,8 @@ ccEvents.VERSION = '0.0.0';
 
 ccEvents.GAME_DIV = document.getElementById('game');
 
-ccEvents.GOLDEN_COOKIE_ONSCREEN = false;
-ccEvents.GOLDEN_COOKIE_LAST_TICK = 0;
+ccEvents.COOKIE_ONSCREEN = false;
+ccEvents.COOKIE_LAST_TICK_SECONDS = 0;
 ccEvents.REINDEER_ONSCREEN = false;
 ccEvents.NOTIFIED_COMBO = false;
 
@@ -23,7 +23,7 @@ ccEvents.cookieType = function () {
   return (Game.goldenCookie.wrath === 1) ? ccEvents.WRATH_COOKIE_TYPE : ccEvents.GOLDEN_COOKIE_TYPE;
 };
 
-ccEvents.goldenCookieSecondsRemaining = function () {
+ccEvents.cookieSecondsRemaining = function () {
   return Math.ceil(Game.goldenCookie.life / Game.fps);
 };
 
@@ -50,9 +50,9 @@ ccEvents.log = function (message, level) {
 
 ccEvents.events = {};
 
-ccEvents.events.goldenCookieEntered = function (priority, cookieType, secondsRemaining) {
+ccEvents.events.cookieEntered = function (priority, cookieType, secondsRemaining) {
   return new CustomEvent(
-  "goldenCookieEntered", {
+  "cookieEntered", {
 		detail: {
       priority: priority,
       cookieType: cookieType,
@@ -63,9 +63,9 @@ ccEvents.events.goldenCookieEntered = function (priority, cookieType, secondsRem
 	});
 };
 
-ccEvents.events.goldenCookieTick = function (priority, cookieType, secondsRemaining) {
+ccEvents.events.cookieTick = function (priority, cookieType, secondsRemaining) {
   return new CustomEvent(
-    "goldenCookieTick", {
+    "cookieTick", {
       detail: {
         priority: priority,
         cookieType: cookieType,
@@ -89,9 +89,9 @@ ccEvents.events.reindeerEntered = function (priority) {
   );
 };
 
-ccEvents.events.comboPresent = function (priority, cookieType) {
+ccEvents.events.comboEntered = function (priority, cookieType) {
   return new CustomEvent(
-    "comboPresent", {
+    "comboEntered", {
       detail: {
         priority: priority,
         cookieType: cookieType
@@ -102,7 +102,7 @@ ccEvents.events.comboPresent = function (priority, cookieType) {
   );
 };
 
-ccEvents.checkReindeer = function () {
+ccEvents.checkReindeerEntered = function () {
   if (ccEvents.REINDEER_ONSCREEN === false) {
     if (Game.season === 'christmas' && Game.seasonPopup.life > 0) {
       ccEvents.REINDEER_ONSCREEN = true;
@@ -119,44 +119,43 @@ ccEvents.checkReindeer = function () {
   }
 };
 
-ccEvents.checkGoldenCookie = function () {
-  if (ccEvents.GOLDEN_COOKIE_ONSCREEN === false) {
+ccEvents.checkCookieEntered = function () {
+  if (ccEvents.COOKIE_ONSCREEN === false) {
     if (Game.goldenCookie.life > 0) {
-      ccEvents.GOLDEN_COOKIE_ONSCREEN = true;
+      ccEvents.COOKIE_ONSCREEN = true;
 
-      var secondsRemaining = ccEvents.goldenCookieSecondsRemaining();
-      var goldenCookieEntered =
-          ccEvents.events.goldenCookieEntered(0, ccEvents.cookieType(), secondsRemaining);
+      var secondsRemaining = ccEvents.cookieSecondsRemaining();
+      var cookieEntered = ccEvents.events.cookieEntered(0, ccEvents.cookieType(), secondsRemaining);
 
-      ccEvents.eventStack.push(goldenCookieEntered);
+      ccEvents.eventStack.push(cookieEntered);
     }
   } else {
     if (Game.goldenCookie.life <= 0) {
-      ccEvents.GOLDEN_COOKIE_ONSCREEN = false;
+      ccEvents.COOKIE_ONSCREEN = false;
       ccEvents.NOTIFIED_COMBO = false;
     }
   }
 };
 
-ccEvents.checkGoldenCookieTick = function () {
-  var secondsRemaining = ccEvents.goldenCookieSecondsRemaining();
+ccEvents.checkCookieTick = function () {
+  var secondsRemaining = ccEvents.cookieSecondsRemaining();
 
-  if (ccEvents.GOLDEN_COOKIE_LAST_TICK === 0) {
+  if (ccEvents.COOKIE_LAST_TICK_SECONDS === 0) {
     // First tick event for this golden cookie.
-    ccEvents.GOLDEN_COOKIE_LAST_TICK = secondsRemaining;
-  } else if (secondsRemaining < ccEvents.GOLDEN_COOKIE_LAST_TICK) {
-    var tick = ccEvents.events.goldenCookieTick(0, ccEvents.cookieType(), secondsRemaining);
+    ccEvents.COOKIE_LAST_TICK_SECONDS = secondsRemaining;
+  } else if (secondsRemaining < ccEvents.COOKIE_LAST_TICK_SECONDS) {
+    var tick = ccEvents.events.cookieTick(0, ccEvents.cookieType(), secondsRemaining);
     ccEvents.eventStack.push(tick);
 
-    ccEvents.GOLDEN_COOKIE_LAST_TICK = secondsRemaining;
+    ccEvents.COOKIE_LAST_TICK_SECONDS = secondsRemaining;
   }
 };
 
-ccEvents.checkCombo = function () {
-  var isCombo = ccEvents.GOLDEN_COOKIE_ONSCREEN === true && ccEvents.REINDEER_ONSCREEN === true;
+ccEvents.checkComboEntered = function () {
+  var isCombo = ccEvents.COOKIE_ONSCREEN === true && ccEvents.REINDEER_ONSCREEN === true;
 
   if (isCombo && ccEvents.NOTIFIED_COMBO === false) {
-    var comboEvent = ccEvents.events.comboPresent(1, ccEvents.cookieType());
+    var comboEvent = ccEvents.events.comboEntered(1, ccEvents.cookieType());
 
     ccEvents.eventStack.push(comboEvent);
 
@@ -164,19 +163,19 @@ ccEvents.checkCombo = function () {
   }
 };
 
-ccEvents.loop = function () {
-  ccEvents.checkReindeer();
-  ccEvents.checkGoldenCookie();
-  ccEvents.checkGoldenCookieTick();
-  ccEvents.checkCombo();
+ccEvents.eventProcessingLoop = function () {
+  ccEvents.checkReindeerEntered();
+  ccEvents.checkCookieEntered();
+  ccEvents.checkCookieTick();
+  ccEvents.checkComboEntered();
 
   ccEvents.dispatch();
 };
 
-ccEvents.cookieClickerGameLoop = Game.Loop;
+ccEvents.existingGameLoop = Game.Loop;
 
 Game.Loop = function () {
-  ccEvents.cookieClickerGameLoop();
-  ccEvents.loop();
+  ccEvents.existingGameLoop();
+  ccEvents.eventProcessingLoop();
 };
 

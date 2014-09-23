@@ -47,7 +47,7 @@ ccNotifications.reindeerEntered = function () {
   }, ccNotifications.DEFAULT_TIMEOUT_MS);
 };
 
-ccNotifications.goldenCookieEntered = function (event) {
+ccNotifications.cookieEntered = function (event) {
   var cookieType = event.detail.cookieType;
   var secondsRemaining = event.detail.secondsRemaining;
   var iconUrl = ccNotifications.cookieIconUrl(cookieType);
@@ -59,7 +59,7 @@ ccNotifications.goldenCookieEntered = function (event) {
   }, ccNotifications.DEFAULT_TIMEOUT_MS);
 };
 
-ccNotifications.comboPresent = function (event) {
+ccNotifications.comboEntered = function (event) {
   var cookieType = event.detail.cookieType;
 
   ccNotifications.createNotification(cookieType + ' ' + 'and reindeer combo!', {
@@ -84,9 +84,9 @@ ccNotifications.goldenCookieExpire = function (event) {
 
 ccNotifications.listeners = {
   reindeerEntered: {name: 'reindeerEntered', handler: ccNotifications.reindeerEntered},
-  goldenCookieEntered: {name: 'goldenCookieEntered', handler: ccNotifications.goldenCookieEntered},
-  comboPresent: {name: 'comboPresent', handler: ccNotifications.comboPresent},
-  goldenCookieTick: {name: 'goldenCookieTick', handler: ccNotifications.goldenCookieExpire}
+  cookieEntered: {name: 'cookieEntered', handler: ccNotifications.cookieEntered},
+  comboEntered: {name: 'comboEntered', handler: ccNotifications.comboEntered},
+  cookieTick: {name: 'cookieTick', handler: ccNotifications.goldenCookieExpire}
 };
 
 ccNotifications.eventHandler = function (event) {
@@ -127,9 +127,9 @@ ccNotifications.notify = function () {
   if (Notification.permission !== 'denied') {
     Notification.requestPermission(function () {
       ccNotifications.addListener(ccNotifications.listeners.reindeerEntered);
-      ccNotifications.addListener(ccNotifications.listeners.goldenCookieEntered);
-      ccNotifications.addListener(ccNotifications.listeners.comboPresent);
-      ccNotifications.addListener(ccNotifications.listeners.goldenCookieTick);
+      ccNotifications.addListener(ccNotifications.listeners.cookieEntered);
+      ccNotifications.addListener(ccNotifications.listeners.comboEntered);
+      ccNotifications.addListener(ccNotifications.listeners.cookieTick);
     });
   }
 };
