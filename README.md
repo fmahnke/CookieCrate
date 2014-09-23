@@ -19,7 +19,9 @@ How To Use
 * Paste the following code into a new bookmark in your browser:
 
 ```javascript
-// TODO: Add bookmarklet URL.
+javascript: (function () {
+    Game.LoadMod('http://fmahnke.github.io/CookieCrate/index.js');
+}());
 ```
 
 * Load up [Cookie Clicker](http://orteil.dashnet.org/cookieclicker/).
