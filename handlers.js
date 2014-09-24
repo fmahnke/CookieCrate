@@ -1,6 +1,6 @@
 ccNotifications = {};
 
-ccNotifications.VERSION = '0.0.0';
+ccNotifications.VERSION = '0.0.1';
 
 ccNotifications.EXPIRE_WARNING_SECONDS = 10;
 
@@ -75,10 +75,37 @@ ccNotifications.cookieExpire = function (event) {
 };
 
 ccNotifications.listeners = {
-  reindeerEntered: {name: 'reindeerEntered', handler: ccNotifications.reindeerEntered},
-  cookieEntered: {name: 'cookieEntered', handler: ccNotifications.cookieEntered},
-  comboEntered: {name: 'comboEntered', handler: ccNotifications.comboEntered},
-  cookieTick: {name: 'cookieTick', handler: ccNotifications.cookieExpire}
+  reindeerEntered: {
+    myname: 'reindeerEntered',
+    name: 'reindeerEntered',
+    handler: ccNotifications.reindeerEntered,
+    label: 'Reindeer appeared'
+  },
+  cookieEntered: {
+    myname: 'cookieEntered',
+    name: 'cookieEntered',
+    handler: ccNotifications.cookieEntered,
+    label: 'Golden/wrath cookie appeared'
+  },
+  comboEntered: {
+    myname: 'comboEntered',
+    name: 'comboEntered',
+    handler: ccNotifications.comboEntered,
+    label: 'Golden/wrath cookie and reindeer combo!!'
+  },
+  cookieExpiring: {
+    myname: 'cookieExpiring',
+    name: 'cookieTick',
+    handler: ccNotifications.cookieExpire,
+    label: 'Golden/wrath cookie expiring soon'
+  }
+};
+
+ccNotifications.activeListeners = {
+  reindeerEntered: [],
+  cookieEntered: [],
+  comboEntered: [],
+  cookieTick: []
 };
 
 ccNotifications.eventHandler = function (event) {
@@ -114,20 +141,53 @@ ccNotifications.processEvents = function () {
 
     while (eventsToProcess.length > 0) {
       var nextEvent = eventsToProcess.shift();
-      var handler = ccNotifications.listeners[nextEvent.type].handler;
 
-      handler(nextEvent);
+      if (ccNotifications.activeListeners.hasOwnProperty(nextEvent.type)) {
+        var listeners = ccNotifications.activeListeners[nextEvent.type];
+
+        listeners.forEach(function (listener) {
+          listener.handler(nextEvent);
+        });
+      }
     }
   }
   ccNotifications.incomingEvents = [];
 };
 
 ccNotifications.addListener = function (listener) {
-  document.addEventListener(listener.name, ccNotifications.eventHandler, false);
+  var eventType = listener.name;
+  var eventName = listener.myname;
+  var list = ccNotifications.activeListeners;
+
+  if (list.hasOwnProperty(eventType)) {
+    var events = list[eventType];
+
+    var filtered = events.filter(function (event) {
+      return (event.myname === eventName);
+    });
+    if (filtered.length <= 0) {
+      ccNotifications.activeListeners[eventType].push(listener);
+    }
+  }
+
 };
 
 ccNotifications.removeListener = function (listener) {
-  document.removeEventListener(listener.name, ccNotifications.eventHandler, false);
+  var eventType = listener.name;
+  var eventName = listener.myname;
+  var list = ccNotifications.activeListeners;
+
+  for (var key in list) {
+    if (list.hasOwnProperty(key)) {
+      var events = list[key];
+
+      var filtered = events.filter(function (event) {
+        return (event.myname !== eventName);
+      });
+      ccNotifications.activeListeners[key] = filtered;
+    }
+  }
+
 };
 
 ccNotifications.notify = function () {
@@ -138,10 +198,10 @@ ccNotifications.notify = function () {
 
   if (Notification.permission !== 'denied') {
     Notification.requestPermission(function () {
-      ccNotifications.addListener(ccNotifications.listeners.reindeerEntered);
-      ccNotifications.addListener(ccNotifications.listeners.cookieEntered);
-      ccNotifications.addListener(ccNotifications.listeners.comboEntered);
-      ccNotifications.addListener(ccNotifications.listeners.cookieTick);
+      document.addEventListener('reindeerEntered', ccNotifications.eventHandler, false);
+      document.addEventListener('cookieEntered', ccNotifications.eventHandler, false);
+      document.addEventListener('comboEntered', ccNotifications.eventHandler, false);
+      document.addEventListener('cookieTick', ccNotifications.eventHandler, false);
     });
   }
 };
