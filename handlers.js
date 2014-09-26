@@ -14,6 +14,7 @@ ccNotifications.ELDEER_ICON_URL =
     'http://orteil.dashnet.org/cookieclicker/img/imperfectCookie.png';
 
 ccNotifications.DEFAULT_TIMEOUT_MS = 2000;
+ccNotifications.LINE_SEP = '\n';
 
 ccNotifications.incomingEvents = [];
 
@@ -41,8 +42,15 @@ ccNotifications.researchComplete = function (event) {
   });
 };
 
-ccNotifications.reindeerEntered = function () {
+ccNotifications.reindeerEntered = function (event) {
+  var cookieTime = event.detail.cookieTime;
+  var body;
+
+  body = 'Cookie in' + ' ' + parseInt(cookieTime.minSec, 10) + ' ' + 'to' + ' ' +
+    parseInt(cookieTime.maxSec, 10) + ' ' + 'seconds';
+
   ccNotifications.createNotification('Reindeer spawned', {
+    body: body,
     icon: ccNotifications.REINDEER_ICON_URL,
     tag: 'reindeer'
   }, ccNotifications.DEFAULT_TIMEOUT_MS);
@@ -52,9 +60,17 @@ ccNotifications.cookieEntered = function (event) {
   var cookieType = event.detail.cookieType;
   var secondsRemaining = event.detail.secondsRemaining;
   var iconUrl = ccNotifications.cookieIconUrl(cookieType);
+  var reindeerTime  = event.detail.reindeerTime;
       
+  var body = secondsRemaining + ' ' + 'seconds remaining';
+
+  if (reindeerTime) {
+    body += ccNotifications.LINE_SEP + 'Reindeer in' + ' ' + parseInt(reindeerTime.minSec, 10) +
+      ' ' + 'to' + ' ' + parseInt(reindeerTime.maxSec, 10) + ' ' + 'seconds';
+  }
+
   ccNotifications.createNotification(cookieType + ' ' + 'cookie spawned', {
-    body: secondsRemaining + ' ' + 'seconds remaining',
+    body: body,
     icon: iconUrl,
     tag: 'cookie'
   }, ccNotifications.DEFAULT_TIMEOUT_MS);
