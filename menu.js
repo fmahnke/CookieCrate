@@ -90,7 +90,9 @@ ccNotifications.initialize = function () {
 };
 
 ccNotifications.updateMenu = function () {
-  ccNotifications.menu.add();
+  if (Game.onMenu === 'prefs') {
+    ccNotifications.menu.add();
+  }
 };
 
 ccNotifications.existingUpdateMenu = Game.UpdateMenu;
