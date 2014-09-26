@@ -1,0 +1,13 @@
+0.1.0
+=====
+* Add notification for 'research complete'.
+* For golden/wrath cookie and deer notifications, add time estimate for the next
+popup. For example, when a wrath cookie appears, its notification also shows the
+estimated time until the next deer will appear.
+
+0.0.0
+=====
+* First stable version.
+* Notifications for golden/wrath cookie spawn, golden/wrath cookie about to
+despawn, reindeer spawn, and cookie/reindeer simultaneous spawn (el-deer
+frenzy possible!)
