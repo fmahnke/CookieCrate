@@ -4,6 +4,7 @@ ccNotifications.tests = {
   },
 
   deer: function () {
+    Game.season = 'christmas';
     Game.seasonPopup.type = 'reindeer';
     Game.seasonPopup.spawn();
   },
@@ -22,6 +23,11 @@ ccNotifications.tests = {
       Game.seasonPopup.type = 'reindeer';
       Game.seasonPopup.spawn();
     }, delay);
+  },
+
+  researchComplete: function () {
+    Game.nextResearch = 65;
+    Game.researchT = 0;
   }
 };
 

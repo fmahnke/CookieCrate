@@ -50,17 +50,29 @@ ccEvents.log = function (message, level) {
 
 ccEvents.events = {};
 
+ccEvents.events.researchComplete = function (priority, name) {
+  return new CustomEvent(
+    "researchComplete", {
+      detail: {
+        priority: priority,
+        name: name
+      },
+      bubbles: true,
+      cancelable: true
+    });
+};
+
 ccEvents.events.cookieEntered = function (priority, cookieType, secondsRemaining) {
   return new CustomEvent(
-  "cookieEntered", {
-		detail: {
-      priority: priority,
-      cookieType: cookieType,
-      secondsRemaining: secondsRemaining
-		},
-		bubbles: true,
-		cancelable: true
-	});
+    "cookieEntered", {
+      detail: {
+        priority: priority,
+        cookieType: cookieType,
+        secondsRemaining: secondsRemaining
+      },
+      bubbles: true,
+      cancelable: true
+    });
 };
 
 ccEvents.events.cookieTick = function (priority, cookieType, secondsRemaining) {
@@ -100,6 +112,18 @@ ccEvents.events.comboEntered = function (priority, cookieType) {
       cancelable: true
     }
   );
+};
+
+ccEvents.checkResearchComplete = function () {
+  if (Game.researchT === 0 && Game.nextResearch) {
+    // Some research was in progress and it just finished.
+
+    var name = Game.UpgradesById[Game.nextResearch].name;
+
+    var researchComplete = ccEvents.events.researchComplete(0, name);
+
+    ccEvents.eventStack.push(researchComplete);
+  }
 };
 
 ccEvents.checkReindeerEntered = function () {
@@ -169,6 +193,7 @@ ccEvents.checkComboEntered = function () {
 };
 
 ccEvents.eventProcessingLoop = function () {
+  ccEvents.checkResearchComplete();
   ccEvents.checkReindeerEntered();
   ccEvents.checkCookieLeft();
   ccEvents.checkCookieEntered();
@@ -181,7 +206,7 @@ ccEvents.eventProcessingLoop = function () {
 ccEvents.existingGameLoop = Game.Loop;
 
 Game.Loop = function () {
-  ccEvents.existingGameLoop();
   ccEvents.eventProcessingLoop();
+  ccEvents.existingGameLoop();
 };
 

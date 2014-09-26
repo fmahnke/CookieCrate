@@ -32,6 +32,15 @@ ccNotifications.createNotification = function (title, properties, duration) {
   setTimeout(function () { notification.close(); }, duration);
 };
 
+ccNotifications.researchComplete = function (event) {
+  var name = event.detail.name;
+
+  ccNotifications.createNotification('Research complete', {
+    body: 'You have discovered' + ' ' + name,
+    tag: 'researchComplete'
+  });
+};
+
 ccNotifications.reindeerEntered = function () {
   ccNotifications.createNotification('Reindeer spawned', {
     icon: ccNotifications.REINDEER_ICON_URL,
@@ -75,6 +84,12 @@ ccNotifications.cookieExpire = function (event) {
 };
 
 ccNotifications.listeners = {
+  researchComplete: {
+    myname: 'researchComplete',
+    name: 'researchComplete',
+    handler: ccNotifications.researchComplete,
+    label: 'Research complete'
+  },
   reindeerEntered: {
     myname: 'reindeerEntered',
     name: 'reindeerEntered',
@@ -102,6 +117,7 @@ ccNotifications.listeners = {
 };
 
 ccNotifications.activeListeners = {
+  researchComplete: [],
   reindeerEntered: [],
   cookieEntered: [],
   comboEntered: [],
@@ -198,6 +214,7 @@ ccNotifications.notify = function () {
 
   if (Notification.permission !== 'denied') {
     Notification.requestPermission(function () {
+      document.addEventListener('researchComplete', ccNotifications.eventHandler, false);
       document.addEventListener('reindeerEntered', ccNotifications.eventHandler, false);
       document.addEventListener('cookieEntered', ccNotifications.eventHandler, false);
       document.addEventListener('comboEntered', ccNotifications.eventHandler, false);

@@ -50,17 +50,29 @@ ccEvents.log = function (message, level) {
 
 ccEvents.events = {};
 
+ccEvents.events.researchComplete = function (priority, name) {
+  return new CustomEvent(
+    "researchComplete", {
+      detail: {
+        priority: priority,
+        name: name
+      },
+      bubbles: true,
+      cancelable: true
+    });
+};
+
 ccEvents.events.cookieEntered = function (priority, cookieType, secondsRemaining) {
   return new CustomEvent(
-  "cookieEntered", {
-		detail: {
-      priority: priority,
-      cookieType: cookieType,
-      secondsRemaining: secondsRemaining
-		},
-		bubbles: true,
-		cancelable: true
-	});
+    "cookieEntered", {
+      detail: {
+        priority: priority,
+        cookieType: cookieType,
+        secondsRemaining: secondsRemaining
+      },
+      bubbles: true,
+      cancelable: true
+    });
 };
 
 ccEvents.events.cookieTick = function (priority, cookieType, secondsRemaining) {
@@ -100,6 +112,18 @@ ccEvents.events.comboEntered = function (priority, cookieType) {
       cancelable: true
     }
   );
+};
+
+ccEvents.checkResearchComplete = function () {
+  if (Game.researchT === 0 && Game.nextResearch) {
+    // Some research was in progress and it just finished.
+
+    var name = Game.UpgradesById[Game.nextResearch].name;
+
+    var researchComplete = ccEvents.events.researchComplete(0, name);
+
+    ccEvents.eventStack.push(researchComplete);
+  }
 };
 
 ccEvents.checkReindeerEntered = function () {
@@ -169,6 +193,7 @@ ccEvents.checkComboEntered = function () {
 };
 
 ccEvents.eventProcessingLoop = function () {
+  ccEvents.checkResearchComplete();
   ccEvents.checkReindeerEntered();
   ccEvents.checkCookieLeft();
   ccEvents.checkCookieEntered();
@@ -181,8 +206,8 @@ ccEvents.eventProcessingLoop = function () {
 ccEvents.existingGameLoop = Game.Loop;
 
 Game.Loop = function () {
-  ccEvents.existingGameLoop();
   ccEvents.eventProcessingLoop();
+  ccEvents.existingGameLoop();
 };
 
 ccNotifications = {};
@@ -217,6 +242,15 @@ ccNotifications.cookieIconUrl = function (cookieType) {
 ccNotifications.createNotification = function (title, properties, duration) {
   var notification = new Notification(title, properties);
   setTimeout(function () { notification.close(); }, duration);
+};
+
+ccNotifications.researchComplete = function (event) {
+  var name = event.detail.name;
+
+  ccNotifications.createNotification('Research complete', {
+    body: 'You have discovered' + ' ' + name,
+    tag: 'researchComplete'
+  });
 };
 
 ccNotifications.reindeerEntered = function () {
@@ -262,6 +296,12 @@ ccNotifications.cookieExpire = function (event) {
 };
 
 ccNotifications.listeners = {
+  researchComplete: {
+    myname: 'researchComplete',
+    name: 'researchComplete',
+    handler: ccNotifications.researchComplete,
+    label: 'Research complete'
+  },
   reindeerEntered: {
     myname: 'reindeerEntered',
     name: 'reindeerEntered',
@@ -289,6 +329,7 @@ ccNotifications.listeners = {
 };
 
 ccNotifications.activeListeners = {
+  researchComplete: [],
   reindeerEntered: [],
   cookieEntered: [],
   comboEntered: [],
@@ -385,6 +426,7 @@ ccNotifications.notify = function () {
 
   if (Notification.permission !== 'denied') {
     Notification.requestPermission(function () {
+      document.addEventListener('researchComplete', ccNotifications.eventHandler, false);
       document.addEventListener('reindeerEntered', ccNotifications.eventHandler, false);
       document.addEventListener('cookieEntered', ccNotifications.eventHandler, false);
       document.addEventListener('comboEntered', ccNotifications.eventHandler, false);
@@ -409,6 +451,7 @@ ccNotifications.tests = {
   },
 
   deer: function () {
+    Game.season = 'christmas';
     Game.seasonPopup.type = 'reindeer';
     Game.seasonPopup.spawn();
   },
@@ -427,6 +470,11 @@ ccNotifications.tests = {
       Game.seasonPopup.type = 'reindeer';
       Game.seasonPopup.spawn();
     }, delay);
+  },
+
+  researchComplete: function () {
+    Game.nextResearch = 65;
+    Game.researchT = 0;
   }
 };
 
