@@ -1,6 +1,6 @@
 ccEvents = {};
 
-ccEvents.VERSION = '0.0.0';
+ccEvents.VERSION = '0.1.0';
 
 ccEvents.GAME_DIV = document.getElementById('game');
 
@@ -234,7 +234,7 @@ Game.Loop = function () {
 
 ccNotifications = {};
 
-ccNotifications.VERSION = '0.0.1';
+ccNotifications.VERSION = '0.1.0';
 
 ccNotifications.EXPIRE_WARNING_SECONDS = 10;
 
@@ -599,6 +599,7 @@ ccNotifications.initialize = function () {
 
       if (configValue === null) {
         ccNotifications.config.save(name, true);
+        configValue = true;
       }
       if (configValue === true) {
         ccNotifications.addListener(listener);
@@ -617,8 +618,12 @@ ccNotifications.existingUpdateMenu = Game.UpdateMenu;
 
 ccNotifications.initialize();
 
+// This is not quite ready yet.
+
+/*
 Game.UpdateMenu = function () {
   ccNotifications.existingUpdateMenu();
   ccNotifications.updateMenu();
 };
+*/
 

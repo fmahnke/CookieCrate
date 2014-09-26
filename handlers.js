@@ -1,6 +1,6 @@
 ccNotifications = {};
 
-ccNotifications.VERSION = '0.0.1';
+ccNotifications.VERSION = '0.1.0';
 
 ccNotifications.EXPIRE_WARNING_SECONDS = 10;
 

@@ -81,6 +81,7 @@ ccNotifications.initialize = function () {
 
       if (configValue === null) {
         ccNotifications.config.save(name, true);
+        configValue = true;
       }
       if (configValue === true) {
         ccNotifications.addListener(listener);
@@ -99,8 +100,12 @@ ccNotifications.existingUpdateMenu = Game.UpdateMenu;
 
 ccNotifications.initialize();
 
+// This is not quite ready yet.
+
+/*
 Game.UpdateMenu = function () {
   ccNotifications.existingUpdateMenu();
   ccNotifications.updateMenu();
 };
+*/
 
