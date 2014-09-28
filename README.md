@@ -7,6 +7,8 @@ Cookie Crate uses browser notifications to display interesting game events. Brow
 displayed as popups on top of all active desktop windows, so important information will not be
 missed if the game is played with the window in the background!
 
+Notifications can be selectively enabled in the menu so you will only see the things you want.
+
 Cookie Crate shows notifications for the following events:
 
 * Golden/wrath cookie appeared. If Christmas, also shows time until next reindeer.

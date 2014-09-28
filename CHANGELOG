@@ -1,3 +1,9 @@
+0.2.0
+=====
+* Blow away the notification priorities code, which managed notification times
+better but caused missing notifications when some were enabled/disabled.
+* Add the menu under all other Cookie Clicker menus.
+
 0.1.0
 =====
 * Add notification for 'research complete'.
