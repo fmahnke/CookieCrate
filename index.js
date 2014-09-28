@@ -583,10 +583,10 @@ ccNotifications.menu.add = function () {
   }
 
   var subSection = l('menu').childNodes[2];
-  var subSectionTitle = subSection.childNodes[0];
+  var lastMenuIndex = subSection.childNodes.length;
+  var lastMenu = subSection.childNodes[lastMenuIndex - 1];
 
-  subSection.insertBefore(frag, subSectionTitle);
-
+  subSection.insertBefore(frag, lastMenu);
 };
 
 ccNotifications.initialize = function () {
@@ -618,12 +618,8 @@ ccNotifications.existingUpdateMenu = Game.UpdateMenu;
 
 ccNotifications.initialize();
 
-// This is not quite ready yet.
-
-/*
 Game.UpdateMenu = function () {
   ccNotifications.existingUpdateMenu();
   ccNotifications.updateMenu();
 };
-*/
 
