@@ -1,6 +1,6 @@
 ccEvents = {};
 
-ccEvents.VERSION = '0.1.0';
+ccEvents.VERSION = '0.2.0';
 
 ccEvents.GAME_DIV = document.getElementById('game');
 

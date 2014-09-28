@@ -1,6 +1,6 @@
 ccEvents = {};
 
-ccEvents.VERSION = '0.1.0';
+ccEvents.VERSION = '0.2.0';
 
 ccEvents.GAME_DIV = document.getElementById('game');
 
@@ -234,7 +234,7 @@ Game.Loop = function () {
 
 ccNotifications = {};
 
-ccNotifications.VERSION = '0.1.0';
+ccNotifications.VERSION = '0.2.0';
 
 ccNotifications.EXPIRE_WARNING_SECONDS = 10;
 
@@ -378,22 +378,6 @@ ccNotifications.eventHandler = function (event) {
   ccNotifications.incomingEvents.push(event);
 };
 
-ccNotifications.removeRedundantEvents = function (incomingEvents) {
-  var hasCombo = function () {
-    var filtered = incomingEvents.filter(function (evt) {
-      return (evt.type === 'comboEntered') ? true : false;
-    });
-    return (filtered.length >= 1) ? true : false;
-  };
-
-  if (hasCombo()) {
-    return incomingEvents.filter(function (evt) {
-      return (evt.type !== 'reindeerEntered' && evt.type !== 'cookieEntered');
-    });
-  }
-  return incomingEvents;
-};
-
 ccNotifications.sortByPriority = function (a, b) {
   return b.priority > a.priority;
 };
@@ -403,7 +387,7 @@ ccNotifications.processEvents = function () {
     // Process events in order of priority.
     ccNotifications.incomingEvents.sort(ccNotifications.sortByPriority);
 
-    var eventsToProcess = ccNotifications.removeRedundantEvents(ccNotifications.incomingEvents);
+    var eventsToProcess = ccNotifications.incomingEvents;
 
     while (eventsToProcess.length > 0) {
       var nextEvent = eventsToProcess.shift();
